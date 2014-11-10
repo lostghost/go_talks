@@ -8,7 +8,7 @@ ken@lostghost.com
 
 * Let's sleep
 
-.play -edit sleep.go /^func main/,/^}/
+.play -edit 10gosurprises/sleep.go /^func main/,/^}/
 
 * #1 - Untyped constants are untyped
 
