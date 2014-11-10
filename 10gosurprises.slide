@@ -13,6 +13,8 @@ ken@lostghost.com
 
 * #1 - Untyped constants are untyped
 
+* Untyped constants
+
 .link http://blog.golang.org/constants
 
 	const Delay = 2
@@ -28,7 +30,9 @@ ken@lostghost.com
 
 - Bar will be type float32
 
-* #2 - Iota for Elegant Constants
+* #2 - Iota
+
+* Iota for Elegant Constants
 
 .link https://blog.splice.com/iota-elegant-constants-golang/
 
@@ -85,6 +89,8 @@ ken@lostghost.com
 
 * #3 - Type assertion to new interface with check
 
+* Example
+
 Assume that we are using a io.writer. We may have runtime configuration to change to the specific writer (http response, file, stdout, gzip compressor, csv, etc.)
 
 All of these satisfy the io.Writer interface, but some are buffered, and at times it may be important to ensure content is flushed.
@@ -123,6 +129,8 @@ Creating Errors
 
 * #4 - error is a builtin interface
 
+* error interface
+
 	type error interface {
 		Error() string
 	}
@@ -140,11 +148,27 @@ Creating Errors
 
 - *Always*stick*to*the*standard*error*interface*across*package*boundaries.*
 
-* Mock a file system
+* #5 - Mock a filesystem
 
+* Mock a filesystem
 
+.link https://talks.golang.org/2012/10things.slide#8
 
-* Stringer interface for easily printing custom types
+.code 10gosurprises/filesystem.go /Start Interface/,/End Interface/
+
+* 
+
+.code 10gosurprises/filesystem.go /Start osFS/,/End osFS/
+
+.code 10gosurprises/filesystem.go /^func main/,/^}/
+
+* 
+
+.code 10gosurprises/testfilesystem.go /Start/,/End/
+
+* #6 - Stringer interface for custom types with fmt
+
+* Stringer interface
 
 - fmt package declares and tests for the Stringer inferface when formatting output.
 
@@ -160,7 +184,9 @@ Creating Errors
 
 .play -edit 10gosurprises/printprettyperson.go /Start/,/End/
 
-* Custom JSON serializer
+* #7 - Custom JSON serialization
+
+* Marshaler Interface
 
 Just like the Stringer interface for the fmt package, the json package provides and tests for a Marshaler interface to allow us to create custom JSON serializers.
 
@@ -178,8 +204,83 @@ Just like the Stringer interface for the fmt package, the json package provides 
 
 .play -edit 10gosurprises/jsonprettyperson.go /Start/,/End/
 
+* #8 - Panic and Recover
+
 * Panic and Recover
 
-* More than just tests in tests
+.link http://blog.golang.org/defer-panic-and-recover
+
+.play -edit 10gosurprises/panic.go /Start/,/End/
+
+* Recover
+
+.play -edit 10gosurprises/panicrecover.go /Start/,/End/
+
+* #9 - More than just tests in tests
+
+* Tests support three types of content
+
+- Tests
+- Benchmarks
+- Examples
+
+* Benchmarks
+
+	func BenchmarkAddStrings(b *testing.B) {
+		set := New()
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			set.Add(fmt.Sprintf("item_num_%d", i))
+		}
+	}
+
+Run all benchmarks with:
+
+	go test -bench .
+
+	PASS
+	BenchmarkNew	20000000	       133 ns/op
+	BenchmarkNewWithItems	 2000000	       840 ns/op
+	BenchmarkAddInts	 5000000	       312 ns/op
+	BenchmarkAddStrings	 1000000	      1093 ns/op
+	BenchmarkRemoveInts	10000000	       214 ns/op
+
+* Examples
+
+	func ExampleNew() {
+		// Create an empty set
+		emptySet := New()
+		log.Println(emptySet.IsEmpty()) // true
+
+		// Create a set with initial values
+		colors := New("red", "blue", "green")
+		log.Println(colors.Size()) // 3
+
+		// Create a set with initial values from a slice of interfaces
+		slice := []interface{}{1, 2, 3, 4, "one", "two", "three", "four"}
+		numbers := New(slice...)
+		log.Println(numbers.Size()) // 8
+	}
+
+.link http://godoc.org/github.com/shopsmart/set
+
+* #10 - Golang presentations with runable code
 
 * Present
+
+.link http://godoc.org/golang.org/x/tools/present
+
+10gosurprises.slide
+
+	10 Go Surprises
+	10 Nov 2014
+
+	Ken Walters
+	VP Engineering, Brad's Deals
+	https://github.com/lostghost/go_talks
+	ken@lostghost.com
+	@lostghost
+
+	* Slide One
+
+	.play -edit 10gosurprises/sleep.go /^func main/,/^}/
