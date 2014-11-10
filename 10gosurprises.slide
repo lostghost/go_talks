@@ -91,7 +91,7 @@ ken@lostghost.com
 
 * Example
 
-Assume that we are using a io.writer. We may have runtime configuration to change to the specific writer (http response, file, stdout, gzip compressor, csv, etc.)
+Assume that we are using a io.writer. We may have runtime configuration to change to the specific writer (http response, file, stdout, gzip compressor, etc.)
 
 All of these satisfy the io.Writer interface, but some are buffered, and at times it may be important to ensure content is flushed.
 
@@ -123,9 +123,9 @@ The difference, in most cases, between a buffered writter and an unbuffered writ
 
 Creating Errors
 
-	myError := fmt.Errorf("Something blew up")
-
 	yourError := errors.New("Something else blew up")
+
+	myError := fmt.Errorf("Something blew up")
 
 * #4 - error is a builtin interface
 
@@ -148,7 +148,19 @@ Creating Errors
 
 - *Always*stick*to*the*standard*error*interface*across*package*boundaries.*
 
-* #5 - Mock a filesystem
+* #5 - Panic and Recover
+
+* Panic and Recover
+
+.link http://blog.golang.org/defer-panic-and-recover
+
+.play -edit 10gosurprises/panic.go /Start/,/End/
+
+* Recover
+
+.play -edit 10gosurprises/panicrecover.go /Start/,/End/
+
+* #6 - Mock a filesystem
 
 * Mock a filesystem
 
@@ -166,7 +178,7 @@ Creating Errors
 
 .code 10gosurprises/testfilesystem.go /Start/,/End/
 
-* #6 - Stringer interface for custom types with fmt
+* #7 - Stringer interface for custom types with fmt
 
 * Stringer interface
 
@@ -184,7 +196,7 @@ Creating Errors
 
 .play -edit 10gosurprises/printprettyperson.go /Start/,/End/
 
-* #7 - Custom JSON serialization
+* #8 - Custom JSON serialization
 
 * Marshaler Interface
 
@@ -203,18 +215,6 @@ Just like the Stringer interface for the fmt package, the json package provides 
 * 
 
 .play -edit 10gosurprises/jsonprettyperson.go /Start/,/End/
-
-* #8 - Panic and Recover
-
-* Panic and Recover
-
-.link http://blog.golang.org/defer-panic-and-recover
-
-.play -edit 10gosurprises/panic.go /Start/,/End/
-
-* Recover
-
-.play -edit 10gosurprises/panicrecover.go /Start/,/End/
 
 * #9 - More than just tests in tests
 
@@ -239,11 +239,11 @@ Run all benchmarks with:
 	go test -bench .
 
 	PASS
-	BenchmarkNew	20000000	       133 ns/op
-	BenchmarkNewWithItems	 2000000	       840 ns/op
-	BenchmarkAddInts	 5000000	       312 ns/op
-	BenchmarkAddStrings	 1000000	      1093 ns/op
-	BenchmarkRemoveInts	10000000	       214 ns/op
+	BenchmarkNew            20000000           133 ns/op
+	BenchmarkNewWithItems    2000000           840 ns/op
+	BenchmarkAddInts         5000000           312 ns/op
+	BenchmarkAddStrings      1000000          1093 ns/op
+	BenchmarkRemoveInts     10000000           214 ns/op
 
 * Examples
 
