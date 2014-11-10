@@ -1,0 +1,101 @@
+10 Go Surprises
+10 Nov 2014
+
+Ken Walters
+VP Engineering, Brad's Deals
+ken@lostghost.com
+@lostghost
+
+* Let's sleep
+
+.play -edit sleep.go /^func main/,/^}/
+
+* #1 - Untyped constants are untyped
+
+http://blog.golang.org/constants
+
+	const Delay = 2
+
+- Both the constant number 2 and the named contant "Delay" are untyped.
+- Constants hold a default type, so if we infer the type from a constant, the inferred type will be the default type of the constant.
+
+	var Foo = Delay
+
+- Foo will be the default type of Delay
+
+	var Bar float32 = Delay
+
+- Bar will be type float32
+
+* #2 - Iota for Elegant Constants
+
+https://blog.splice.com/iota-elegant-constants-golang/
+
+- Iota keyword represents successive untyped integer constants.
+- Reset whenever "const" appears.
+- Increments on each line in the const block.
+
+* Simple Example:
+
+	const (
+		C0 = iota // 0
+		C1        // 1
+		C2        // 2
+		_
+		_
+		C5        // 5
+	)
+
+	const (
+		C0, N0 = iota, iota  // 0, 0
+		C1, N1               // 1, 1
+		C2, N2               // 2, 2
+		_
+		_
+		C5, N5               // 5, 5
+	)
+
+
+* Simple Example:
+
+	type category int
+
+	const (
+		CatApparel category = iota // 0
+		CatBooks                   // 1
+		CatHome                    // 2
+		CatElectronics             // 3
+	)
+
+* Bitmask example:
+
+	type categories int
+
+	const (
+		CatApparel categories = 1 << iota  // 1 << 0, 00000001
+		CatBooks                           // 1 << 1, 00000010
+		CatHome                            // 1 << 2, 00000100
+		CatElectronics                     // 1 << 3, 00001000
+	)
+
+	fmt.Println(CatBooks | CatElectronics)
+
+	// result: 00001010, 10 in decimal
+
+* #3 - Cast to new interface
+
+
+
+* error is an interface
+
+* Mock a file system
+
+* Stringer for Print
+
+* Custom JSON serializer
+
+* Panic and Recover
+
+* More than just tests in tests
+
+* Present
