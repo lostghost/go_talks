@@ -3,6 +3,7 @@
 
 Ken Walters
 VP Engineering, Brad's Deals
+https://github.com/lostghost/go_talks
 ken@lostghost.com
 @lostghost
 
@@ -12,7 +13,7 @@ ken@lostghost.com
 
 * #1 - Untyped constants are untyped
 
-http://blog.golang.org/constants
+.link http://blog.golang.org/constants
 
 	const Delay = 2
 
@@ -29,7 +30,7 @@ http://blog.golang.org/constants
 
 * #2 - Iota for Elegant Constants
 
-https://blog.splice.com/iota-elegant-constants-golang/
+.link https://blog.splice.com/iota-elegant-constants-golang/
 
 - Iota keyword represents successive untyped integer constants.
 - Reset whenever "const" appears.
@@ -82,17 +83,100 @@ https://blog.splice.com/iota-elegant-constants-golang/
 
 	// result: 00001010, 10 in decimal
 
-* #3 - Cast to new interface
+* #3 - Type assertion to new interface with check
 
+Assume that we are using a io.writer. We may have runtime configuration to change to the specific writer (http response, file, stdout, gzip compressor, csv, etc.)
 
+All of these satisfy the io.Writer interface, but some are buffered, and at times it may be important to ensure content is flushed.
 
-* error is an interface
+The difference, in most cases, between a buffered writter and an unbuffered writer is the presence of a Flush method, but if we are coding to our standard io.Writer interface, then we can't call Flush.
+
+* Unbuffered Writer
+
+.play -edit 10gosurprises/writer.go /Start/,/End/
+
+* Buffered Writer
+
+.play -edit 10gosurprises/bufferedwriter.go /Start/,/End/
+
+* Flush Our Buffered Writer
+
+.play -edit 10gosurprises/flushwriter.go /Start/,/End/
+
+* Flush Our Buffered Writer
+
+.play -edit 10gosurprises/flushwritercheck.go /Start/,/End/
+
+* Errors
+
+	f, err := os.Open(name)
+	if err != nil {
+		return err
+	}
+	codeUsing(f)
+
+Creating Errors
+
+	myError := fmt.Errorf("Something blew up")
+
+	yourError := errors.New("Something else blew up")
+
+* #4 - error is a builtin interface
+
+	type error interface {
+		Error() string
+	}
+
+- Packages implement their own error types.
+- We can create custom error types with richer detail.
+- We can use type assertion to check for error types and details.
+
+	foo, err := CustomFunction()
+	if customeErr, isCustomError := err.(CustomError); isCustomError {
+		if customErr.Code() == 42 {
+			// ... Recover gracefully
+		}
+	}
+
+- *Always*stick*to*the*standard*error*interface*across*package*boundaries.*
 
 * Mock a file system
 
-* Stringer for Print
+
+
+* Stringer interface for easily printing custom types
+
+- fmt package declares and tests for the Stringer inferface when formatting output.
+
+	type Stringer interface {
+		String() string
+	}
+
+* Person
+
+.play -edit 10gosurprises/printperson.go /Start/,/End/
+
+* Person
+
+.play -edit 10gosurprises/printprettyperson.go /Start/,/End/
 
 * Custom JSON serializer
+
+Just like the Stringer interface for the fmt package, the json package provides and tests for a Marshaler interface to allow us to create custom JSON serializers.
+
+	// Marshaler is the interface implemented by objects that
+	// can marshal themselves into valid JSON.
+	type Marshaler interface {
+		MarshalJSON() ([]byte, error)
+	}
+
+* 
+
+.play -edit 10gosurprises/jsonperson.go /Start/,/End/
+
+* 
+
+.play -edit 10gosurprises/jsonprettyperson.go /Start/,/End/
 
 * Panic and Recover
 
