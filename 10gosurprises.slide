@@ -284,3 +284,5 @@ Run all benchmarks with:
 	* Slide One
 
 	.play -edit 10gosurprises/sleep.go /^func main/,/^}/
+
+.link https://github.com/lostghost/go_talks
