@@ -11,15 +11,37 @@ ken@lostghost.com
 
 .play -edit 10gosurprises/sleep.go /^func main/,/^}/
 
+Does what we expect. Announces that it will sleep, sleeps for 500 miliseconds, awakes, and starts again.
+
+Let's move our sleep delay into a named constant so that it's easier to maintain.
+
+* Let's sleep
+
+.play -edit 10gosurprises/sleepconst.go /Start/,/End/
+
+Still does what we expect. Not very exciting.
+
+What if we want random sleep intervals. Now we will have to use a var for Delay.
+
+* Let's sleep
+
+.play -edit 10gosurprises/sleepvar.go /Start/,/End/
+
+Uh oh, compile error.
+
+Can't multiply different types -- int for Delay and time.Duration for time.Millisecond.
+
+That makes sense, but why did the previous two examples work?
+
 * #1 - Untyped constants are untyped
 
 * Untyped constants
 
 .link http://blog.golang.org/constants
 
-	const Delay = 2
+	const Delay = 500
 
-- Both the constant number 2 and the named contant "Delay" are untyped.
+- Both the constant number 500 and the named contant "Delay" are untyped.
 - Constants hold a default type, so if we infer the type from a constant, the inferred type will be the default type of the constant.
 
 	var Foo = Delay
