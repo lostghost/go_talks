@@ -1,0 +1,117 @@
+Go Byte Some Strings
+March 22, 2018
+
+Ken Walters
+Brad's Deals
+ken@bradsdeals.com
+@lostghost
+
+* What is a string?
+
+- A sequence of characters.
+- A character is a letter, numerical digit, punctuation mark, whitespace or control character, such as return or tab.
+- Typically implemented as an array of bytes.
+
+.play -edit go_byte_some_strings/code/simple_conversions.go /START OMIT/,/END OMIT/
+
+* What is a byte?
+
+- An 8-bit integer.
+- In Go, the "byte" type is an alias for "uint8" -- that is, an unsigned integer ranging from 0 to 255.
+
+.play -edit go_byte_some_strings/code/bits_to_bytes.go /START OMIT/,/END OMIT/
+
+* So what happens when we convert a string to an array of bytes?
+
+* ASCII Encoding (There's no school like the old school)
+
+- Originally developed for teletype machines.
+
+.image go_byte_some_strings/assets/teletype.jpeg
+
+* ASCII Encoding
+
+- The prominent encoding format in the US until the mid-2000's.
+- 128 characters are encoded as 7-bit integers according to the ASCII standard.
+- 95 printable characters including the digits 0 to 9, lowercase letters a to z, uppercase letters A to Z, and punctuation symbols.
+- 33 non-printing control characters.
+
+.image go_byte_some_strings/assets/ASCII-Table.svg
+
+* ASCII Encoding
+
+- Encoding the string "abc" results in an array of integers containing the values 97, 98, and 99.
+
+.play -edit go_byte_some_strings/code/abcs.go /START OMIT/,/END OMIT/
+
+* ASCII Encoding
+
+.play -edit go_byte_some_strings/code/bytes_to_string.go /START OMIT/,/END OMIT/
+
+.play go_byte_some_strings/code/compare_string_and_bytes.go /START OMIT/,/END OMIT/
+
+* Show me the €€€
+
+* Unicode
+
+- Dates back to the late 80's.
+- Intended to provide a unified way of handling characters for any language.
+- Over 1 million possible "code points".
+- Most current version (Unicode 10.0) includes 136,755 characters.
+- Can be encoded in a number of different ways, including UTF-8, UTF-16 and others.
+- UTF-8 is the most common encoding format on the web today.
+- [[https://en.wikipedia.org/wiki/List_of_Unicode_characters][Unicode characters]]
+
+* UTF-8
+
+- Capable of encoding all 1,112,064 valid code points in Unicode using one to four 8-bit bytes.
+- Variable width.
+- First 128 characters are identical to ASCII encoding.
+
+.image go_byte_some_strings/assets/utf-8-bits.png _ 900
+
+* UTF-8
+
+€ = U+20AC
+
+.image go_byte_some_strings/assets/euro-bits.png
+
+.play -edit go_byte_some_strings/code/euros.go /START OMIT/,/END OMIT/
+
+* UTF-8
+
+- As with the ASCII examples, we can also convert from bytes to a unicode string.
+
+.play -edit go_byte_some_strings/code/utf8_bytes_to_string.go /START OMIT/,/END OMIT/
+
+* Some takeaways
+
+* There may not be a 1-1 relationship between strings and byte arrays.
+
+- Byte-by-byte handling of strings should be approached with extreme caution.
+- In Go, the `len()` function for a string will return the number of bytes in the string, not the number of characters or runes. If the string consists only of single byte characters then this may appear correct but with multibyte characters this may lead to unexpected results.
+- Slicing a string may split a multibyte character making it unable to be decoded.
+- When a one-to-one mapping is needed, Golang provides the "rune" type.
+
+.play -edit go_byte_some_strings/code/multibyte_mix.go /START OMIT/,/END OMIT/
+
+* While all strings can be represented as an array of bytes, not all arrays of bytes can be represented as strings.
+
+- There are a number of byte values that are invalid UTF-8 encodings.
+- The values 192, 193, and 245 to 255 should never appear in a valid UTF-8 sequence.
+- A continuation byte must be between 128 and 191.
+- Bytes are just numbers. In order to convert a array of bytes into a string, the array must contains values that can be converted into unicode characters.
+
+* When an array of bytes is not a string - example
+
+* MD5 Hash
+
+- We're used to seeing an MD5 hash represented as a sequence of 32 hexadecimal digits, such as "9e107d9d372bb6826bd81d3542a419d6".
+- However, it is actually a 128-bit value. Basically a very large number.
+- In Go, the md5.Sum() function represents this 128-bit value as an array of 16 8-bit byte values.
+
+.play -edit go_byte_some_strings/code/md5_bytes.go /START OMIT/,/END OMIT/
+
+* MD5 Hash
+
+.play -edit go_byte_some_strings/code/md5_hex.go /START OMIT/,/END OMIT/
